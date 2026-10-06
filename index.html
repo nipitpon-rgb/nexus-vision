@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050505">
+  <title>NEXUS VISION — Hand Interaction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <div class="grid"></div>
+
+  <div id="loading" class="boot-screen">
+    <div class="boot-mark"><span></span><span></span><span></span></div>
+    <p class="eyebrow">NEXUS / VISION ENGINE</p>
+    <h1>INITIALIZING VISION SYSTEM</h1>
+    <div class="boot-track"><span id="bootProgress"></span></div>
+    <div class="boot-steps">
+      <span id="bootMedia">LOADING MEDIAPIPE</span>
+      <span id="bootCamera">INITIALIZING CAMERA</span>
+      <span id="bootTrack">CALIBRATING TRACKING</span>
+    </div>
+  </div>
+
+  <main class="app-shell">
+    <header class="topbar glass">
+      <div class="brand">
+        <div class="brand-icon">N</div>
+        <div>
+          <div class="brand-name">NEXUS VISION</div>
+          <div class="brand-status"><i></i><span id="systemStatus">SYSTEM ONLINE</span></div>
+        </div>
+      </div>
+
+      <div class="experience-title">
+        <span class="eyebrow">EXPERIENCE</span>
+        <strong>HAND INTERACTION</strong>
+      </div>
+
+      <div class="window-tools">
+        <div class="clock mono" id="clock">00:00:00</div>
+        <button class="window-btn" id="minimizeBtn" title="Minimize">−</button>
+        <button class="window-btn" id="maximizeBtn" title="Maximize">□</button>
+        <button class="window-btn close" id="closeBtn" title="Close">×</button>
+      </div>
+    </header>
+
+    <section class="workspace">
+      <aside class="sidebar glass">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">CHARACTER SYSTEM</span>
+            <h2>SELECT UNIT</h2>
+          </div>
+          <span class="counter mono">05</span>
+        </div>
+        <div id="characterList" class="character-list"></div>
+        <div class="sidebar-footer">
+          <span>NEURAL LINK</span>
+          <span class="mono">READY</span>
+        </div>
+      </aside>
+
+      <section class="experience">
+        <div class="experience-meta">
+          <div>
+            <span class="eyebrow">LIVE CAMERA FEED</span>
+            <h1 id="experienceHeading">NOVA / CHR-001</h1>
+          </div>
+          <div class="live-chip"><i></i><span id="cameraState">CAMERA OFFLINE</span></div>
+        </div>
+
+        <div class="camera-frame" id="cameraFrame">
+          <video id="video" autoplay muted playsinline></video>
+          <canvas id="landmarkCanvas"></canvas>
+
+          <div class="camera-ui">
+            <div class="corner c1"></div><div class="corner c2"></div>
+            <div class="corner c3"></div><div class="corner c4"></div>
+            <div class="scanline"></div>
+            <div class="camera-topline">
+              <span class="mono">NEXUS / OPTICAL CHANNEL 01</span>
+              <span class="mono" id="resolution">-- × --</span>
+            </div>
+            <div class="tracking-reticle" id="reticle"><span></span></div>
+            <div class="detection-badge" id="detectionBadge">
+              <span class="badge-dot"></span>
+              <span id="detectionText">NO HAND DETECTED</span>
+            </div>
+          </div>
+
+          <div id="cameraPlaceholder" class="camera-placeholder">
+            <div class="placeholder-orbit"><span></span></div>
+            <span class="eyebrow">CAMERA CHANNEL STANDBY</span>
+            <strong>START CAMERA TO BEGIN</strong>
+            <button class="primary-btn" id="startCameraBtn">START CAMERA</button>
+          </div>
+
+          <div class="reaction" id="reaction">READY</div>
+        </div>
+
+        <div class="gesture-strip glass">
+          <div class="gesture-main">
+            <span class="eyebrow">CURRENT GESTURE</span>
+            <strong id="gestureName">—</strong>
+          </div>
+          <div class="gesture-metrics">
+            <div><span>HANDS</span><strong id="handsCount">0</strong></div>
+            <div><span>CONFIDENCE</span><strong id="confidence">—</strong></div>
+            <div><span>POSITION</span><strong id="position">—</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="status-panel glass">
+        <div class="panel-heading">
+          <span class="eyebrow">SYSTEM STATUS</span>
+          <span class="status-pulse"></span>
+        </div>
+
+        <div class="status-group">
+          <div class="status-row"><span>Camera</span><strong id="statusCamera">OFFLINE</strong></div>
+          <div class="status-row"><span>MediaPipe</span><strong id="statusMediaPipe">LOADING</strong></div>
+          <div class="status-row"><span>Tracking</span><strong id="statusTracking">IDLE</strong></div>
+          <div class="status-row"><span>Hands</span><strong id="statusHands">0</strong></div>
+          <div class="status-row"><span>FPS</span><strong id="fps">0</strong></div>
+          <div class="status-row"><span>Resolution</span><strong id="statusResolution">—</strong></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="panel-heading"><span class="eyebrow">CHARACTER</span></div>
+        <div class="character-detail">
+          <div class="detail-avatar" id="detailAvatar">N</div>
+          <div><strong id="detailName">NOVA</strong><span id="detailId">CHR-001</span></div>
+        </div>
+        <div class="status-group compact">
+          <div class="status-row"><span>State</span><strong id="characterState">ACTIVE</strong></div>
+          <div class="status-row"><span>Reaction</span><strong id="characterReaction">READY</strong></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="panel-heading"><span class="eyebrow">GESTURE</span></div>
+        <div class="gesture-readout">
+          <span>Current</span>
+          <strong id="panelGesture">—</strong>
+          <div class="confidence-bar"><span id="confidenceBar"></span></div>
+          <div class="readout-bottom"><span>Confidence</span><strong id="panelConfidence">—</strong></div>
+        </div>
+      </aside>
+    </section>
+
+    <footer class="bottom-bar glass">
+      <div class="control-cluster">
+        <button class="control active" id="cameraToggle"><span class="control-dot"></span>CAMERA</button>
+        <button class="control active" id="trackingToggle"><span class="control-dot"></span>TRACKING</button>
+        <button class="control active" id="landmarkToggle"><span class="control-dot"></span>LANDMARKS</button>
+        <button class="control active" id="mirrorToggle"><span class="control-dot"></span>MIRROR</button>
+      </div>
+      <div class="shortcut-hint mono">C CAMERA · L LANDMARKS · M MIRROR · F FULLSCREEN</div>
+      <button class="control fullscreen" id="fullscreenBtn">FULLSCREEN ↗</button>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="errorModal" class="modal-backdrop hidden">
+    <div class="error-modal glass">
+      <span class="eyebrow">VISION ENGINE</span>
+      <h2 id="errorTitle">CAMERA ACCESS DENIED</h2>
+      <p id="errorMessage">Please allow camera permission to enable hand tracking.</p>
+      <button class="primary-btn" id="retryBtn">TRY AGAIN</button>
+    </div>
+  </div>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
